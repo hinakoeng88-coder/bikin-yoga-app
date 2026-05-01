@@ -10,34 +10,53 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--pk:#e8789a;--pkl:#fde8ef;--pkd:#c4527a;--v:#b56088;--vl:#fae8f2;--bg:#fff5f8;--card:#fff;--surf:#fef0f4;--bd:#f5c8d8;--tx:#3d2030;--mu:#a07080}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;color:var(--tx);max-width:390px;margin:0 auto;background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:10}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;color:var(--tx);max-width:390px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;height:100vh;height:100dvh}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card);border-bottom:.5px solid var(--bd);flex-shrink:0}
 .logo{font-size:17px;font-weight:500;color:var(--pk)}.logo em{font-style:normal;color:var(--pkd)}
 .hdr-r{display:flex;align-items:center;gap:8px}
 .spill{background:var(--pkl);color:var(--pkd);font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap}
-.spbtn{background:none;border:.5px solid var(--bd);border-radius:6px;padding:3px 7px;font-size:13px;cursor:pointer;color:var(--mu);line-height:1}
-.content{flex:1;overflow-y:auto;padding-bottom:64px;-webkit-overflow-scrolling:touch}
-.sec{display:none}.sec.on{display:block}
-.btabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;display:flex;background:var(--card);border-top:.5px solid var(--bd);z-index:20;padding-bottom:env(safe-area-inset-bottom)}
-.btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0 8px;cursor:pointer;color:var(--mu);font-size:10px;gap:3px}
-.btab-icon{font-size:18px;line-height:1}
-.btab.on{color:var(--pk)}
-.cbody{padding:10px 8px 12px;background:var(--bg)}
-.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.spbtn{background:none;border:.5px solid var(--bd);border-radius:6px;padding:3px 7px;font-size:13px;cursor:pointer;color:var(--mu);line-height:1;-webkit-tap-highlight-color:transparent}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.sec{display:none;flex:1;flex-direction:column;min-height:0}
+.sec.on{display:flex}
+/* 月ナビ */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--card);border-bottom:.5px solid var(--bd);flex-shrink:0;position:relative;z-index:10}
+.cal-nav-btn{background:none;border:.5px solid var(--bd);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--mu);flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.cal-nav-btn:active{background:var(--pkl)}
+.cal-month-label{font-size:15px;font-weight:500;color:var(--pkd);cursor:pointer;padding:4px 12px;border-radius:20px;user-select:none;-webkit-tap-highlight-color:transparent}
+.cal-month-label:active{background:var(--pkl)}
+.month-picker{position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);background:var(--card);border:.5px solid var(--bd);border-radius:14px;box-shadow:0 4px 20px rgba(196,82,122,.18);z-index:50;padding:8px;display:none;width:190px}
+.month-picker.show{display:block}
+.mp-ttl{font-size:11px;color:var(--mu);text-align:center;padding:4px 0 8px;border-bottom:.5px solid var(--bd);margin-bottom:6px}
+.mp-item{padding:9px 12px;border-radius:8px;font-size:13px;cursor:pointer;color:var(--tx);-webkit-tap-highlight-color:transparent}
+.mp-item:active{background:var(--pkl)}
+.mp-item.active{background:var(--pk);color:#fff;font-weight:500}
+/* カレンダー — 残り高さをすべて使う */
+.cal-wrapper{display:flex;flex-direction:column;flex:1;padding:6px 6px 6px;background:var(--bg);min-height:0}
+.dow-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;flex-shrink:0}
 .dow{text-align:center;font-size:10px;color:var(--mu);padding:3px 0;font-weight:500}
-.cell{border:.5px solid var(--bd);border-radius:6px;height:56px;padding:3px 4px;cursor:pointer;background:var(--card);overflow:hidden;position:relative;transition:transform .1s}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;flex:1;min-height:0}
+.cell{border:.5px solid var(--bd);border-radius:6px;padding:4px 4px 3px;cursor:pointer;background:var(--card);overflow:hidden;position:relative;-webkit-tap-highlight-color:transparent;transition:transform .1s}
 .cell:active{transform:scale(.94)}
 .cell.emp{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
 .cell.today{border-color:var(--pk);border-width:1.5px}
 .cell.hasv{background:var(--pkl)}
 .cell.cdone{background:#f5b8cc}
-.dn{font-size:10px;font-weight:500;color:var(--mu);line-height:1}
+.dn{font-size:10px;font-weight:500;color:var(--mu);line-height:1;display:block}
 .cell.today .dn{color:var(--pk)}
 .vnms{margin-top:2px;display:flex;flex-direction:column;gap:1px}
 .vn{font-size:8px;color:var(--pkd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
-.ck{position:absolute;top:2px;right:3px;font-size:11px;color:var(--pkd);font-weight:500}
-.cal-sep{height:.5px;background:var(--bd);margin:16px 8px 0}
-.cal-month-lbl{padding:12px 0 4px;text-align:center;font-size:12px;font-weight:500;color:var(--pkd)}
+.ck{position:absolute;top:2px;right:3px;font-size:10px;color:var(--pkd);font-weight:700}
+/* ログ・Voicy はスクロール可能 */
+.ltab{padding:14px;background:var(--bg);flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.vtab{padding:12px 14px;background:var(--bg);flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* 下タブ */
+.btabs{display:flex;background:var(--card);border-top:.5px solid var(--bd);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}
+.btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0 8px;cursor:pointer;color:var(--mu);font-size:10px;gap:3px;-webkit-tap-highlight-color:transparent}
+.btab-icon{font-size:18px;line-height:1}
+.btab.on{color:var(--pk)}
+/* OVERLAY */
 .ov-wrap{position:fixed;inset:0;background:rgba(100,30,60,.35);z-index:100;display:none;align-items:flex-end;justify-content:center}
 .ov-wrap.show{display:flex}
 .sheet{background:var(--card);border-radius:16px 16px 0 0;width:100%;max-width:390px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:up .22s ease}
@@ -45,24 +64,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .sh-handle{width:34px;height:4px;background:var(--bd);border-radius:2px;margin:10px auto 0}
 .sh-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;border-bottom:.5px solid var(--bd)}
 .sh-ttl{font-size:15px;font-weight:500;color:var(--pkd)}
-.shx{background:var(--surf);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:15px;color:var(--mu);display:flex;align-items:center;justify-content:center}
+.shx{background:var(--surf);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:15px;color:var(--mu);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .sh-body{padding:12px 14px 36px}
 .vcard{background:var(--surf);border-radius:12px;padding:12px;margin-bottom:10px}
 .vcard-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .bynum{font-size:11px;font-weight:500;color:var(--pkd);background:var(--pkl);padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
 .bynum-plus{font-size:11px;font-weight:500;color:var(--v);background:#fce8f5;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.bynum-green{font-size:11px;font-weight:500;color:#2e7d52;background:#e8f5ee;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
 .vtitle{font-size:13px;flex:1;line-height:1.4;color:var(--tx);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chk-grp{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto}
 .mychk{accent-color:var(--pk);width:18px;height:18px;cursor:pointer;flex-shrink:0}
 .mymin{width:44px;border:.5px solid var(--bd);border-radius:6px;padding:4px;font-size:12px;color:var(--tx);background:var(--card);outline:none;text-align:center;font-family:-apple-system,sans-serif}
 .mymin:focus{border-color:var(--pk)}
 .min-lbl{font-size:11px;color:var(--mu);flex-shrink:0}
-.ytbtn{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--card);border:.5px solid var(--bd);border-radius:10px;padding:11px 0;width:100%;font-size:14px;font-weight:500;color:var(--tx);font-family:-apple-system,sans-serif;text-decoration:none}
+.ytbtn{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--card);border:.5px solid var(--bd);border-radius:10px;padding:11px 0;width:100%;font-size:14px;font-weight:500;color:var(--tx);font-family:-apple-system,sans-serif;text-decoration:none;-webkit-tap-highlight-color:transparent}
 .ytbtn:active{opacity:.8}
 .ytred{color:#e52d27;font-size:16px}
 .url-input{width:100%;border:.5px solid var(--bd);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--tx);background:var(--card);outline:none;font-family:-apple-system,sans-serif;display:block}
 .url-input:focus{border-color:var(--pk)}
-.ltab{padding:14px 14px 20px;background:var(--bg)}
 .srow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .sbox{background:var(--card);border:.5px solid var(--bd);border-radius:10px;padding:12px;text-align:center}
 .sv{font-size:20px;font-weight:500;color:var(--pkd)}
@@ -74,12 +93,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .lmins{font-size:18px;font-weight:500;color:var(--pkd)}
 .lminl{font-size:9px;color:var(--mu)}
 .dh{font-size:11px;color:var(--mu);margin:12px 0 5px;border-bottom:.5px solid var(--bd);padding-bottom:3px}
-.vtab{padding:12px 14px 20px;background:var(--bg)}
 #vc-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;width:100%}
 #kw-input{border:.5px solid var(--bd);border-radius:8px;padding:9px 10px;font-size:13px;color:var(--tx);background:var(--card);outline:none;font-family:-apple-system,sans-serif}
 #kw-input:focus{border-color:var(--pk)}
 #note-sel{border:.5px solid var(--bd);border-radius:8px;padding:9px 4px;font-size:11px;color:var(--tx);background:var(--card);outline:none;font-family:-apple-system,sans-serif;-webkit-appearance:none;text-align:center;cursor:pointer}
-#add-btn{background:var(--pk);color:#fff;border:none;border-radius:8px;padding:9px 12px;font-size:13px;cursor:pointer;font-family:-apple-system,sans-serif;white-space:nowrap;flex-shrink:0}
+#add-btn{background:var(--pk);color:#fff;border:none;border-radius:8px;padding:9px 12px;font-size:13px;cursor:pointer;font-family:-apple-system,sans-serif;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
 .vcd{background:var(--card);border:.5px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:8px}
 .vcmeta{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
 .vcep{font-size:11px;font-weight:500;color:var(--v);background:var(--vl);padding:2px 8px;border-radius:10px;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -115,6 +133,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 </style>
 </head>
 <body>
+
 <div class="hdr">
   <div class="logo">Bikin <em>Yoga</em></div>
   <div class="hdr-r">
@@ -122,9 +141,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
     <button class="spbtn" onclick="openSP()">⚙️</button>
   </div>
 </div>
+
 <div class="content">
-  <div class="sec on" id="sec-cal"><div class="cbody" id="cbody"></div></div>
-  <div class="sec" id="sec-log"><div class="ltab"><div class="srow" id="stats"></div><div id="loglist"></div></div></div>
+  <!-- カレンダー -->
+  <div class="sec on" id="sec-cal">
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="navMonth(-1)">‹</button>
+      <div style="position:relative">
+        <div class="cal-month-label" id="cal-label" onclick="togglePicker()"></div>
+        <div class="month-picker" id="month-picker">
+          <div class="mp-ttl">月を選択</div>
+          <div id="mp-list"></div>
+        </div>
+      </div>
+      <button class="cal-nav-btn" onclick="navMonth(1)">›</button>
+    </div>
+    <div class="cal-wrapper">
+      <div class="dow-row">
+        <div class="dow">日</div><div class="dow">月</div><div class="dow">火</div>
+        <div class="dow">水</div><div class="dow">木</div><div class="dow">金</div><div class="dow">土</div>
+      </div>
+      <div class="cgrid" id="cgrid"></div>
+    </div>
+  </div>
+
+  <!-- 記録 -->
+  <div class="sec" id="sec-log">
+    <div class="ltab">
+      <div class="srow" id="stats"></div>
+      <div id="loglist"></div>
+    </div>
+  </div>
+
+  <!-- Voicy -->
   <div class="sec" id="sec-voicy">
     <div class="vtab">
       <div id="vc-toolbar">
@@ -140,14 +189,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
     </div>
   </div>
 </div>
+
 <div class="btabs">
   <div class="btab" id="btab-log" onclick="sw('log',this)"><div class="btab-icon">📊</div><div>記録</div></div>
   <div class="btab on" id="btab-cal" onclick="sw('cal',this)"><div class="btab-icon">📅</div><div>カレンダー</div></div>
   <div class="btab" id="btab-voicy" onclick="sw('voicy',this)"><div class="btab-icon">🎙</div><div>Voicy</div></div>
 </div>
+
+<!-- 日付ポップアップ -->
 <div class="ov-wrap" id="ov-day" onclick="if(event.target===this)closeDay()">
   <div class="sheet"><div class="sh-handle"></div><div class="sh-hdr"><div class="sh-ttl" id="day-ttl"></div><button class="shx" onclick="closeDay()">✕</button></div><div class="sh-body" id="day-body"></div></div>
 </div>
+
+<!-- Voicy追加/編集 -->
 <div class="ov-wrap" id="ov-vc" onclick="if(event.target===this)closeVCForm()">
   <div class="sheet"><div class="sh-handle"></div><div class="sh-hdr"><div class="sh-ttl" id="vc-form-ttl">Voicyを記録</div><button class="shx" onclick="closeVCForm()">✕</button></div>
     <div class="sh-body">
@@ -158,122 +212,110 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
     </div>
   </div>
 </div>
+
+<!-- 設定 -->
 <div class="ov-wrap" id="ov-sp" onclick="if(event.target===this)closeSP()">
   <div class="sheet"><div class="sh-handle"></div><div class="sh-hdr"><div class="sh-ttl">⚙️ 設定</div><button class="shx" onclick="closeSP()">✕</button></div>
     <div class="sh-body">
-      <div class="spsec"><div class="spttl">月別メニューを追加</div><div class="spf"><label>年月</label><input id="sp-ym" placeholder="2026-05"></div><div class="spf"><label>動画データ（1日1行）形式：BY番号,タイトル,URL|…</label><textarea id="sp-data" placeholder="1行目が1日目…30行で30日分"></textarea></div><div class="sphint">💡 来月分のURLをClaudeに送ると貼り付け用データを自動生成します！</div><button class="spadd" onclick="saveMonth()">追加する</button></div>
+      <div class="spsec"><div class="spttl">月別メニューを追加</div><div class="spf"><label>年月</label><input id="sp-ym" placeholder="2026-06"></div><div class="spf"><label>動画データ（1日1行）形式：BY番号,タイトル,URL|…</label><textarea id="sp-data" placeholder="1行目が1日目…30行で30日分"></textarea></div><div class="sphint">💡 来月分のURLをClaudeに送ると貼り付け用データを自動生成します！</div><button class="spadd" onclick="saveMonth()">追加する</button></div>
       <div class="spsec"><div class="spttl">登録済みの月</div><div class="spml" id="sp-mlist"></div></div>
       <div class="spsec"><div class="spttl">データ管理</div><button class="sprst" onclick="resetAll()">すべての記録をリセット</button></div>
     </div>
   </div>
 </div>
+
 <script>
-function fixToolbar(){
-  const tb=document.getElementById('vc-toolbar'),kw=document.getElementById('kw-input'),ns=document.getElementById('note-sel'),ab=document.getElementById('add-btn');
-  if(!tb||!kw||!ns||!ab)return;
-  const total=tb.offsetWidth,addW=ab.offsetWidth||56,noteW=48,gap=12,kwW=total-addW-noteW-gap;
-  kw.style.width=Math.max(80,kwW)+'px';kw.style.flexShrink='0';ns.style.width=noteW+'px';ns.style.flexShrink='0';
-}
-const MENU={1:[{n:'BY45',t:'朝ヨガ・体幹リセット',u:'https://youtu.be/8ZBHeGIEZBc'},{n:'BY269',t:'骨盤底筋トレーニング',u:'https://youtu.be/rD3v2h05zw4'},{n:'BY464',t:'全身美筋ルーティン',u:'https://youtu.be/dI_CTKg3qts'}],2:[{n:'BY499',t:'下半身引き締め',u:'https://youtu.be/eKnNbmcRzG0'},{n:'BY503',t:'体幹・腹筋強化',u:'https://youtu.be/dlwaZi6Lhiw'},{n:'BY451',t:'股関節ほぐし',u:'https://youtu.be/EyG6cRyKgXA'}],3:[{n:'BY406',t:'腰まわりリリース',u:'https://youtu.be/43X8l5fZRZw'},{n:'BY536',t:'背中・肩甲骨ほぐし',u:'https://youtu.be/LZZ1ApZHv_0'},{n:'BY387',t:'美脚ヨガ',u:'https://youtu.be/jd5m3Iza7FY'}],4:[{n:'BY383',t:'お腹引き締め',u:'https://youtu.be/PzfhdpkTakw'},{n:'BY193',t:'骨盤矯正ヨガ',u:'https://youtu.be/Lg1-dS5M96M'},{n:'BY628',t:'全身ほぐし',u:'https://youtu.be/d-sMWD3DNBs'}],5:[{n:'BY576',t:'太もも・美脚',u:'https://youtu.be/zOdk8ua3IDk'},{n:'BY272',t:'骨盤底筋＋体幹',u:'https://youtu.be/a0pUBOdViOU'},{n:'BY578',t:'ヒップアップ',u:'https://youtu.be/ObgrCL8X-1Y'}],6:[{n:'BY517',t:'肩・首こり解消',u:'https://youtu.be/gKf1cQMQBIw'},{n:'BY360',t:'股関節柔軟',u:'https://youtu.be/vSebUNgXoMQ'},{n:'BY477',t:'くびれメイク',u:'https://youtu.be/UkPvZCqmGxY'}],7:[{n:'BY39',t:'全身リセットヨガ',u:'https://youtu.be/hgIGbsmvfVE'},{n:'BY312',t:'下半身ほぐし',u:'https://youtu.be/WEwLSK6hGrY'},{n:'BY370',t:'背骨・体幹',u:'https://youtu.be/_dDlhtChBUs'}],8:[{n:'BY455',t:'美尻トレーニング',u:'https://youtu.be/ZXMD4k3yph0'},{n:'BY617',t:'全身美筋ヨガ',u:'https://youtu.be/YplwsL0SrSA'},{n:'BY474',t:'骨盤リセット',u:'https://youtu.be/6Dzhb9zCpHE'}],9:[{n:'BY289',t:'腸腰筋ほぐし',u:'https://youtu.be/d5aTCVHpKyI'},{n:'BY515',t:'太もも外側ケア',u:'https://youtu.be/uo5JzW6ZMto'},{n:'BY466',t:'ウエスト引き締め',u:'https://youtu.be/PrjC-l4QZQ0'}],10:[{n:'BY502',t:'全身ストレッチ',u:'https://youtu.be/f0XgaPAwoP4'},{n:'BY382',t:'お腹・体幹',u:'https://youtu.be/xyWy9D6qF9o'},{n:'BY418',t:'股関節＋骨盤',u:'https://youtu.be/kbwpNz8JusA'}],11:[{n:'BY495',t:'肩甲骨リリース',u:'https://youtu.be/SnxkninXoxg'},{n:'BY493',t:'背中スッキリ',u:'https://youtu.be/14Wyk7oQXEI'},{n:'BY294',t:'脚やせヨガ',u:'https://youtu.be/_dpD9JONUQk'}],12:[{n:'BY506',t:'体幹・腹筋',u:'https://youtu.be/PLDg0XFPlWc'},{n:'BY507',t:'下半身集中',u:'https://youtu.be/5QEA-EweZN8'},{n:'BY508',t:'全身美筋',u:'https://youtu.be/tg6WeTJjr58'}],13:[{n:'BY241',t:'下半身筋膜リリース',u:'https://youtu.be/RLH6SdkFMPQ'},{n:'BY472',t:'骨盤底筋強化',u:'https://youtu.be/QL9AX2CLgGg'},{n:'BY585',t:'背中・美姿勢',u:'https://youtu.be/H0sMTmrpNzQ'}],14:[{n:'BY469',t:'ヒップ集中',u:'https://youtu.be/-84xXjGrtmU'},{n:'BY440',t:'全身ほぐし',u:'https://youtu.be/zoiHaOwQTWY'},{n:'BY516',t:'くびれ＋体幹',u:'https://youtu.be/1qqK8FlzlTQ'}],15:[{n:'BY532',t:'骨盤ケアヨガ',u:'https://youtu.be/1s7dh9ISGuU'},{n:'BY290',t:'脚ほぐし・柔軟',u:'https://youtu.be/gmnhLfiwUw4'},{n:'BY534',t:'全身リフレッシュ',u:'https://youtu.be/X8YjVjbJzlo'}],16:[{n:'BY460',t:'内もも引き締め',u:'https://youtu.be/YYv2uf8UmQs'},{n:'BY296',t:'股関節・腰ほぐし',u:'https://youtu.be/NcSHVJrqeog'},{n:'BY324',t:'お腹凹ませ',u:'https://youtu.be/FVzfCVnk3Io'}],17:[{n:'BY492',t:'美尻・骨盤',u:'https://youtu.be/EYbCXyvMCGg'},{n:'BY363',t:'柔軟ストレッチ',u:'https://youtu.be/7pc0N4x1zhw'},{n:'BY494',t:'体幹強化',u:'https://youtu.be/-FIE_XW5Rzc'}],18:[{n:'BY90',t:'全身疲労回復',u:'https://youtu.be/k0op30gg4Ns'},{n:'BY297',t:'骨盤底筋ケア',u:'https://youtu.be/UixrRjc42jQ'},{n:'BY417',t:'下半身美筋',u:'https://youtu.be/fy_tSeT51LM'}],19:[{n:'BY573',t:'体幹・姿勢改善',u:'https://youtu.be/RBMnyDzAOPI'},{n:'BY529',t:'お腹・腰ケア',u:'https://youtu.be/SyFGukYN66A'},{n:'BY626',t:'全身美筋ヨガ',u:'https://youtu.be/tLXfTtskEPg'}],20:[{n:'BY301',t:'全身ほぐし',u:'https://youtu.be/HZ-qi3IMZIk'},{n:'BY459',t:'太もも・脚やせ',u:'https://youtu.be/E99jBk0vcEk'},{n:'BY413',t:'骨盤矯正',u:'https://youtu.be/svBXGHuMKwI'}],21:[{n:'BY622',t:'全身美筋ルーティン',u:'https://youtu.be/7hqOxFVzpaY'},{n:'BY348',t:'股関節集中',u:'https://youtu.be/q5sje_2WbDc'},{n:'BY408',t:'体幹・くびれ',u:'https://youtu.be/bL6giK3VVLY'}],22:[{n:'BY624',t:'下半身集中',u:'https://youtu.be/tB03v6l_TV0'},{n:'BY427',t:'お腹引き締め',u:'https://youtu.be/HR-whiQNdrw'},{n:'BY471',t:'全身ヨガ',u:'https://youtu.be/DMktw1Qd1jQ'}],23:[{n:'BY460',t:'内もも引き締め',u:'https://youtu.be/YYv2uf8UmQs'},{n:'BY302',t:'骨盤・腰ケア',u:'https://youtu.be/kYnmmDtXvbk'},{n:'BY245',t:'脚やせ全身',u:'https://youtu.be/oM7G3YV0NeU'}],24:[{n:'BY17',t:'美筋ヨガ基本',u:'https://youtu.be/Kd6WtieInMo'},{n:'BY384',t:'太もも・骨盤',u:'https://youtu.be/snJ77MLvEx4'},{n:'BY465',t:'ヒップアップ',u:'https://youtu.be/BHBH9AKFEH8'}],25:[{n:'BY288',t:'股関節柔軟',u:'https://youtu.be/HZVBCGyqRHs'},{n:'BY574',t:'全身ストレッチ',u:'https://youtu.be/Nf3Xgs5_Qzc'},{n:'BY578',t:'ヒップアップ集中',u:'https://youtu.be/ObgrCL8X-1Y'}],26:[{n:'BY419',t:'くびれ・お腹',u:'https://youtu.be/--GHr7NXMlQ'},{n:'BY443',t:'下半身ほぐし',u:'https://youtu.be/HCDiA5JzXLA'},{n:'BY295',t:'全身リセット',u:'https://youtu.be/RNeEUvMGifQ'}],27:[{n:'BY43',t:'朝ヨガ全身',u:'https://youtu.be/gmJk9PeaViQ'},{n:'BY604',t:'体幹・腹筋',u:'https://youtu.be/HkUAbE_f1uw'},{n:'BY625',t:'美脚・骨盤',u:'https://youtu.be/HrxfCz0DoLA'}],28:[{n:'BY509',t:'全身美筋ヨガ',u:'https://youtu.be/PKiZ7rQjkjc'},{n:'BY401',t:'下半身集中',u:'https://youtu.be/GtLwoFul0ec'},{n:'BY537',t:'体幹強化',u:'https://youtu.be/I9nBfurkw-E'}],29:[{n:'BY30',t:'美筋ヨガ入門',u:'https://youtu.be/o9pKWG9XjxU'},{n:'BY336',t:'骨盤・腰ケア',u:'https://youtu.be/vmo48cc0-Mo'},{n:'BY408',t:'体幹・くびれ',u:'https://youtu.be/bL6giK3VVLY'}],30:[{n:'BY456',t:'全身仕上げヨガ',u:'https://youtu.be/AVJI_laJd6Y'},{n:'BY297',t:'骨盤底筋ケア',u:'https://youtu.be/UixrRjc42jQ'},{n:'BY450',t:'30日完成ルーティン',u:'https://youtu.be/aUjY0z8aWI0'}]};
-const BUILTIN={'2026-04':{label:'2026年4月',days:MENU}};
+const MENUS={'2026-04':{label:'2026年4月',days:{1:[{n:'BY45',t:'朝ヨガ・体幹リセット',u:'https://youtu.be/8ZBHeGIEZBc'},{n:'BY269',t:'骨盤底筋トレーニング',u:'https://youtu.be/rD3v2h05zw4'},{n:'BY464',t:'全身美筋ルーティン',u:'https://youtu.be/dI_CTKg3qts'}],2:[{n:'BY499',t:'下半身引き締め',u:'https://youtu.be/eKnNbmcRzG0'},{n:'BY503',t:'体幹・腹筋強化',u:'https://youtu.be/dlwaZi6Lhiw'},{n:'BY451',t:'股関節ほぐし',u:'https://youtu.be/EyG6cRyKgXA'}],3:[{n:'BY406',t:'腰まわりリリース',u:'https://youtu.be/43X8l5fZRZw'},{n:'BY536',t:'背中・肩甲骨ほぐし',u:'https://youtu.be/LZZ1ApZHv_0'},{n:'BY387',t:'美脚ヨガ',u:'https://youtu.be/jd5m3Iza7FY'}],4:[{n:'BY383',t:'お腹引き締め',u:'https://youtu.be/PzfhdpkTakw'},{n:'BY193',t:'骨盤矯正ヨガ',u:'https://youtu.be/Lg1-dS5M96M'},{n:'BY628',t:'全身ほぐし',u:'https://youtu.be/d-sMWD3DNBs'}],5:[{n:'BY576',t:'太もも・美脚',u:'https://youtu.be/zOdk8ua3IDk'},{n:'BY272',t:'骨盤底筋＋体幹',u:'https://youtu.be/a0pUBOdViOU'},{n:'BY578',t:'ヒップアップ',u:'https://youtu.be/ObgrCL8X-1Y'}],6:[{n:'BY517',t:'肩・首こり解消',u:'https://youtu.be/gKf1cQMQBIw'},{n:'BY360',t:'股関節柔軟',u:'https://youtu.be/vSebUNgXoMQ'},{n:'BY477',t:'くびれメイク',u:'https://youtu.be/UkPvZCqmGxY'}],7:[{n:'BY39',t:'全身リセットヨガ',u:'https://youtu.be/hgIGbsmvfVE'},{n:'BY312',t:'下半身ほぐし',u:'https://youtu.be/WEwLSK6hGrY'},{n:'BY370',t:'背骨・体幹',u:'https://youtu.be/_dDlhtChBUs'}],8:[{n:'BY455',t:'美尻トレーニング',u:'https://youtu.be/ZXMD4k3yph0'},{n:'BY617',t:'全身美筋ヨガ',u:'https://youtu.be/YplwsL0SrSA'},{n:'BY474',t:'骨盤リセット',u:'https://youtu.be/6Dzhb9zCpHE'}],9:[{n:'BY289',t:'腸腰筋ほぐし',u:'https://youtu.be/d5aTCVHpKyI'},{n:'BY515',t:'太もも外側ケア',u:'https://youtu.be/uo5JzW6ZMto'},{n:'BY466',t:'ウエスト引き締め',u:'https://youtu.be/PrjC-l4QZQ0'}],10:[{n:'BY502',t:'全身ストレッチ',u:'https://youtu.be/f0XgaPAwoP4'},{n:'BY382',t:'お腹・体幹',u:'https://youtu.be/xyWy9D6qF9o'},{n:'BY418',t:'股関節＋骨盤',u:'https://youtu.be/kbwpNz8JusA'}],11:[{n:'BY495',t:'肩甲骨リリース',u:'https://youtu.be/SnxkninXoxg'},{n:'BY493',t:'背中スッキリ',u:'https://youtu.be/14Wyk7oQXEI'},{n:'BY294',t:'脚やせヨガ',u:'https://youtu.be/_dpD9JONUQk'}],12:[{n:'BY506',t:'体幹・腹筋',u:'https://youtu.be/PLDg0XFPlWc'},{n:'BY507',t:'下半身集中',u:'https://youtu.be/5QEA-EweZN8'},{n:'BY508',t:'全身美筋',u:'https://youtu.be/tg6WeTJjr58'}],13:[{n:'BY241',t:'下半身筋膜リリース',u:'https://youtu.be/RLH6SdkFMPQ'},{n:'BY472',t:'骨盤底筋強化',u:'https://youtu.be/QL9AX2CLgGg'},{n:'BY585',t:'背中・美姿勢',u:'https://youtu.be/H0sMTmrpNzQ'}],14:[{n:'BY469',t:'ヒップ集中',u:'https://youtu.be/-84xXjGrtmU'},{n:'BY440',t:'全身ほぐし',u:'https://youtu.be/zoiHaOwQTWY'},{n:'BY516',t:'くびれ＋体幹',u:'https://youtu.be/1qqK8FlzlTQ'}],15:[{n:'BY532',t:'骨盤ケアヨガ',u:'https://youtu.be/1s7dh9ISGuU'},{n:'BY290',t:'脚ほぐし・柔軟',u:'https://youtu.be/gmnhLfiwUw4'},{n:'BY534',t:'全身リフレッシュ',u:'https://youtu.be/X8YjVjbJzlo'}],16:[{n:'BY460',t:'内もも引き締め',u:'https://youtu.be/YYv2uf8UmQs'},{n:'BY296',t:'股関節・腰ほぐし',u:'https://youtu.be/NcSHVJrqeog'},{n:'BY324',t:'お腹凹ませ',u:'https://youtu.be/FVzfCVnk3Io'}],17:[{n:'BY492',t:'美尻・骨盤',u:'https://youtu.be/EYbCXyvMCGg'},{n:'BY363',t:'柔軟ストレッチ',u:'https://youtu.be/7pc0N4x1zhw'},{n:'BY494',t:'体幹強化',u:'https://youtu.be/-FIE_XW5Rzc'}],18:[{n:'BY90',t:'全身疲労回復',u:'https://youtu.be/k0op30gg4Ns'},{n:'BY297',t:'骨盤底筋ケア',u:'https://youtu.be/UixrRjc42jQ'},{n:'BY417',t:'下半身美筋',u:'https://youtu.be/fy_tSeT51LM'}],19:[{n:'BY573',t:'体幹・姿勢改善',u:'https://youtu.be/RBMnyDzAOPI'},{n:'BY529',t:'お腹・腰ケア',u:'https://youtu.be/SyFGukYN66A'},{n:'BY626',t:'全身美筋ヨガ',u:'https://youtu.be/tLXfTtskEPg'}],20:[{n:'BY301',t:'全身ほぐし',u:'https://youtu.be/HZ-qi3IMZIk'},{n:'BY459',t:'太もも・脚やせ',u:'https://youtu.be/E99jBk0vcEk'},{n:'BY413',t:'骨盤矯正',u:'https://youtu.be/svBXGHuMKwI'}],21:[{n:'BY622',t:'全身美筋ルーティン',u:'https://youtu.be/7hqOxFVzpaY'},{n:'BY348',t:'股関節集中',u:'https://youtu.be/q5sje_2WbDc'},{n:'BY408',t:'体幹・くびれ',u:'https://youtu.be/bL6giK3VVLY'}],22:[{n:'BY624',t:'下半身集中',u:'https://youtu.be/tB03v6l_TV0'},{n:'BY427',t:'お腹引き締め',u:'https://youtu.be/HR-whiQNdrw'},{n:'BY471',t:'全身ヨガ',u:'https://youtu.be/DMktw1Qd1jQ'}],23:[{n:'BY460',t:'内もも引き締め',u:'https://youtu.be/YYv2uf8UmQs'},{n:'BY302',t:'骨盤・腰ケア',u:'https://youtu.be/kYnmmDtXvbk'},{n:'BY245',t:'脚やせ全身',u:'https://youtu.be/oM7G3YV0NeU'}],24:[{n:'BY17',t:'美筋ヨガ基本',u:'https://youtu.be/Kd6WtieInMo'},{n:'BY384',t:'太もも・骨盤',u:'https://youtu.be/snJ77MLvEx4'},{n:'BY465',t:'ヒップアップ',u:'https://youtu.be/BHBH9AKFEH8'}],25:[{n:'BY288',t:'股関節柔軟',u:'https://youtu.be/HZVBCGyqRHs'},{n:'BY574',t:'全身ストレッチ',u:'https://youtu.be/Nf3Xgs5_Qzc'},{n:'BY578',t:'ヒップアップ集中',u:'https://youtu.be/ObgrCL8X-1Y'}],26:[{n:'BY419',t:'くびれ・お腹',u:'https://youtu.be/--GHr7NXMlQ'},{n:'BY443',t:'下半身ほぐし',u:'https://youtu.be/HCDiA5JzXLA'},{n:'BY295',t:'全身リセット',u:'https://youtu.be/RNeEUvMGifQ'}],27:[{n:'BY43',t:'朝ヨガ全身',u:'https://youtu.be/gmJk9PeaViQ'},{n:'BY604',t:'体幹・腹筋',u:'https://youtu.be/HkUAbE_f1uw'},{n:'BY625',t:'美脚・骨盤',u:'https://youtu.be/HrxfCz0DoLA'}],28:[{n:'BY509',t:'全身美筋ヨガ',u:'https://youtu.be/PKiZ7rQjkjc'},{n:'BY401',t:'下半身集中',u:'https://youtu.be/GtLwoFul0ec'},{n:'BY537',t:'体幹強化',u:'https://youtu.be/I9nBfurkw-E'}],29:[{n:'BY30',t:'美筋ヨガ入門',u:'https://youtu.be/o9pKWG9XjxU'},{n:'BY336',t:'骨盤・腰ケア',u:'https://youtu.be/vmo48cc0-Mo'},{n:'BY408',t:'体幹・くびれ',u:'https://youtu.be/bL6giK3VVLY'}],30:[{n:'BY456',t:'全身仕上げヨガ',u:'https://youtu.be/AVJI_laJd6Y'},{n:'BY297',t:'骨盤底筋ケア',u:'https://youtu.be/UixrRjc42jQ'},{n:'BY450',t:'30日完成ルーティン',u:'https://youtu.be/aUjY0z8aWI0'}]}},'2026-05':{label:'2026年5月',days:{1:[{n:'BY28',t:'全身美筋ルーティン',u:'https://youtu.be/D6BE35BZRaE'},{n:'BY444',t:'骨盤ケアヨガ',u:'https://youtu.be/61Osa0VLquU'},{n:'BY508',t:'全身美筋',u:'https://youtu.be/tg6WeTJjr58'}],2:[{n:'BY517',t:'肩・首こり解消',u:'https://youtu.be/gKf1cQMQBIw'},{n:'BY407',t:'腰まわりケア',u:'https://youtu.be/06LuiOMuQe0'},{n:'BY418',t:'股関節＋骨盤',u:'https://youtu.be/kbwpNz8JusA'}],3:[{n:'BY30',t:'美筋ヨガ入門',u:'https://youtu.be/o9pKWG9XjxU'},{n:'BY247',t:'脚やせヨガ',u:'https://youtu.be/vQjI_tqfB90'},{n:'BY284',t:'全身ほぐし',u:'https://youtu.be/ePadyhmGRgo'}],4:[{n:'BY285',t:'体幹強化',u:'https://youtu.be/-kFNj_0_sH0'},{n:'BY401',t:'下半身集中',u:'https://youtu.be/GtLwoFul0ec'},{n:'BY387',t:'美脚ヨガ',u:'https://youtu.be/jd5m3Iza7FY'}],5:[{n:'BY502',t:'全身ストレッチ',u:'https://youtu.be/f0XgaPAwoP4'},{n:'BY500',t:'骨盤リセット',u:'https://youtu.be/QYXzJeLg1vs'},{n:'BY451',t:'股関節ほぐし',u:'https://youtu.be/EyG6cRyKgXA'}],6:[{n:'BY39',t:'全身リセットヨガ',u:'https://youtu.be/hgIGbsmvfVE'},{n:'BY363',t:'柔軟ストレッチ',u:'https://youtu.be/7pc0N4x1zhw'},{n:'BY471',t:'全身ヨガ',u:'https://youtu.be/DMktw1Qd1jQ'}],7:[{n:'BY495',t:'肩甲骨リリース',u:'https://youtu.be/SnxkninXoxg'},{n:'BY493',t:'背中スッキリ',u:'https://youtu.be/14Wyk7oQXEI'},{n:'BY445',t:'美尻トレーニング',u:'https://youtu.be/v74rgkVeA3M'}],8:[{n:'BY428',t:'骨盤底筋強化',u:'https://youtu.be/4o7n9PSL9bs'},{n:'BY200',t:'全身疲労回復',u:'https://youtu.be/j6naYNOYwTw'},{n:'BY391',t:'美脚・骨盤',u:'https://youtu.be/mNo2D0g2E4c'}],9:[{n:'BY573',t:'体幹・姿勢改善',u:'https://youtu.be/RBMnyDzAOPI'},{n:'BY296',t:'股関節・腰ほぐし',u:'https://youtu.be/NcSHVJrqeog'},{n:'BY332',t:'くびれメイク',u:'https://youtu.be/eOtUZLfOnsA'}],10:[{n:'BY375',t:'下半身引き締め',u:'https://youtu.be/AXq1JcZO804'},{n:'BY589',t:'全身美筋ヨガ',u:'https://youtu.be/VasC2CtH8UA'},{n:'BY534',t:'全身リフレッシュ',u:'https://youtu.be/X8YjVjbJzlo'}],11:[{n:'BY25',t:'朝ヨガ全身',u:'https://youtu.be/Iv2e80X0p9M'},{n:'BY368',t:'骨盤ケア',u:'https://youtu.be/pUxagsPaFOk'},{n:'BY578',t:'ヒップアップ集中',u:'https://youtu.be/ObgrCL8X-1Y'}],12:[{n:'BY288',t:'股関節柔軟',u:'https://youtu.be/HZVBCGyqRHs'},{n:'BY289',t:'腸腰筋ほぐし',u:'https://youtu.be/d5aTCVHpKyI'},{n:'BY324',t:'お腹凹ませ',u:'https://youtu.be/FVzfCVnk3Io'}],13:[{n:'BY448',t:'体幹・腹筋',u:'https://youtu.be/sh2LCun0k1w'},{n:'BY496',t:'脚やせ全身',u:'https://youtu.be/oLa9LCczuNE'},{n:'BY410',t:'骨盤矯正',u:'https://youtu.be/MXxDaircqR0'}],14:[{n:'BY30',t:'美筋ヨガ入門',u:'https://youtu.be/o9pKWG9XjxU'},{n:'BY382',t:'お腹・体幹',u:'https://youtu.be/xyWy9D6qF9o'},{n:'BY463',t:'全身美筋ヨガ',u:'https://youtu.be/3TtAGwhIOpQ'}],15:[{n:'BY241',t:'下半身筋膜リリース',u:'https://youtu.be/RLH6SdkFMPQ'},{n:'BY372',t:'美脚・骨盤',u:'https://youtu.be/Jz8e42lWTfY'},{n:'BY442',t:'全身ほぐし',u:'https://youtu.be/rzMVs6ezo-o'}],16:[{n:'BY455',t:'美尻トレーニング',u:'https://youtu.be/ZXMD4k3yph0'},{n:'BY515',t:'太もも外側ケア',u:'https://youtu.be/uo5JzW6ZMto'},{n:'BY519',t:'全身引き締め',u:'https://youtu.be/uO4bJayNj9c'}],17:[{n:'BY301',t:'全身ほぐし',u:'https://youtu.be/HZ-qi3IMZIk'},{n:'BY314',t:'背中・美姿勢',u:'https://youtu.be/epQZc6vZrbk'},{n:'BY373',t:'股関節集中',u:'https://youtu.be/1ddXcz5_s_E'}],18:[{n:'BY56',t:'朝ヨガ体幹',u:'https://youtu.be/MBEjZHF8QfY'},{n:'BY571',t:'くびれ・お腹',u:'https://youtu.be/0DRo3XAAu20'},{n:'BY575',t:'全身美筋ルーティン',u:'https://youtu.be/Tx-62GYlkYU'}],19:[{n:'BY499',t:'下半身引き締め',u:'https://youtu.be/eKnNbmcRzG0'},{n:'BY503',t:'体幹・腹筋強化',u:'https://youtu.be/dlwaZi6Lhiw'},{n:'BY585',t:'背中・美姿勢',u:'https://youtu.be/H0sMTmrpNzQ'}],20:[{n:'BY506',t:'体幹・腹筋',u:'https://youtu.be/PLDg0XFPlWc'},{n:'BY395',t:'骨盤底筋ケア',u:'https://youtu.be/FXY6xIeFm-Y'},{n:'BY413',t:'骨盤矯正',u:'https://youtu.be/svBXGHuMKwI'}],21:[{n:'BY292',t:'美脚ヨガ',u:'https://youtu.be/fqbBC60VkAA'},{n:'BY334',t:'全身ストレッチ',u:'https://youtu.be/1vbqRwkYNBE'},{n:'BY494',t:'体幹強化',u:'https://youtu.be/-FIE_XW5Rzc'}],22:[{n:'BY492',t:'美尻・骨盤',u:'https://youtu.be/EYbCXyvMCGg'},{n:'BY269',t:'骨盤底筋トレーニング',u:'https://youtu.be/rD3v2h05zw4'},{n:'BY420',t:'下半身集中',u:'https://youtu.be/ZXoacOd1eC0'}],23:[{n:'BY36',t:'全身リセット',u:'https://youtu.be/z_czE363Hgs'},{n:'BY251',t:'脚やせ全身',u:'https://youtu.be/aJv-DtvQpG8'},{n:'BY370',t:'背骨・体幹',u:'https://youtu.be/_dDlhtChBUs'}],24:[{n:'BY300',t:'全身ほぐし',u:'https://youtu.be/ChPpSkqA6zw'},{n:'BY302',t:'骨盤・腰ケア',u:'https://youtu.be/kYnmmDtXvbk'},{n:'BY504',t:'体幹・くびれ',u:'https://youtu.be/pYsRP1XW_Cc'}],25:[{n:'BY331',t:'内もも引き締め',u:'https://youtu.be/XI8u3BRGHj4'},{n:'BY312',t:'下半身ほぐし',u:'https://youtu.be/WEwLSK6hGrY'},{n:'BY402',t:'ウエスト引き締め',u:'https://youtu.be/J5Ole3gGu8A'}],26:[{n:'BY460',t:'内もも引き締め',u:'https://youtu.be/YYv2uf8UmQs'},{n:'BY337',t:'肩甲骨リリース',u:'https://youtu.be/XXvBVI3bNQ4'},{n:'BY333',t:'背中スッキリ',u:'https://youtu.be/zynNIAhkW_g'}],27:[{n:'BY293',t:'腸腰筋ほぐし',u:'https://youtu.be/vlGKKYp63cY'},{n:'BY472',t:'骨盤底筋強化',u:'https://youtu.be/QL9AX2CLgGg'},{n:'BY519',t:'全身引き締め',u:'https://youtu.be/uO4bJayNj9c'}],28:[{n:'BY313',t:'美尻トレーニング',u:'https://youtu.be/wOWwHYV4kjM'},{n:'BY593',t:'全身美筋ヨガ',u:'https://youtu.be/Lj7nRm6owUo'},{n:'BY294',t:'脚やせヨガ',u:'https://youtu.be/_dpD9JONUQk'}],29:[{n:'BY26',t:'朝ヨガ全身',u:'https://youtu.be/c_2GVrNCyk8'},{n:'BY298',t:'全身ほぐし',u:'https://youtu.be/Rv3kA6r1Cu8'},{n:'BY588',t:'骨盤ケア',u:'https://youtu.be/jRKP-74WkR8'}],30:[{n:'BY622',t:'全身美筋ルーティン',u:'https://youtu.be/7hqOxFVzpaY'},{n:'BY348',t:'股関節集中',u:'https://youtu.be/q5sje_2WbDc'},{n:'BY408',t:'体幹・くびれ',u:'https://youtu.be/bL6giK3VVLY'}],31:[{n:'BY634',t:'新作ヨガ',u:'https://youtu.be/6IYeTbB2YIg'},{n:'BY384',t:'太もも・骨盤',u:'https://youtu.be/snJ77MLvEx4'},{n:'BY295',t:'全身リセット',u:'https://youtu.be/RNeEUvMGifQ'}]}}};
+
 const LS={get:k=>{try{return JSON.parse(localStorage.getItem('bky_'+k)||'null')}catch{return null}},set:(k,v)=>{try{localStorage.setItem('bky_'+k,JSON.stringify(v))}catch{}}};
-const getD=()=>LS.get('done')||{};const getVC=()=>LS.get('voicy')||[];const getCM=()=>LS.get('months')||{};const allM=()=>({...BUILTIN,...getCM()});
-const today=new Date();let vcEditId=null;
+const getD=()=>LS.get('done')||{};const getVC=()=>LS.get('voicy')||[];const getCM=()=>LS.get('months')||{};
+const allM=()=>({...MENUS,...getCM()});
+const today=new Date();let vcEditId=null,pickerOpen=false;
+let curYM=(()=>{const ym=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;const ks=Object.keys(allM()).sort();return ks.includes(ym)?ym:ks[ks.length-1]||'2026-05';})();
+
 function sw(id,el){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.btab').forEach(t=>t.classList.remove('on'));document.getElementById('sec-'+id).classList.add('on');el.classList.add('on');if(id==='log')renderLog();if(id==='voicy'){renderVC();setTimeout(fixToolbar,50);}}
+function navMonth(d){const ks=Object.keys(allM()).sort();const i=ks.indexOf(curYM)+d;if(i>=0&&i<ks.length){curYM=ks[i];renderCal();}}
+function togglePicker(){pickerOpen=!pickerOpen;const p=document.getElementById('month-picker');if(pickerOpen){renderPicker();p.classList.add('show');}else p.classList.remove('show');}
+function renderPicker(){const all=allM(),ks=Object.keys(all).sort();document.getElementById('mp-list').innerHTML=ks.map(k=>`<div class="mp-item${k===curYM?' active':''}" onclick="selectMonth('${k}')">${all[k].label||k}</div>`).join('');}
+function selectMonth(ym){curYM=ym;pickerOpen=false;document.getElementById('month-picker').classList.remove('show');renderCal();}
+document.addEventListener('click',e=>{if(pickerOpen&&!document.getElementById('month-picker').contains(e.target)&&!document.getElementById('cal-label').contains(e.target)){pickerOpen=false;document.getElementById('month-picker').classList.remove('show');}});
+
 function fk(ym,d){return`${ym}-${String(d).padStart(2,'0')}`}
 function dimM(ym){const[y,m]=ym.split('-').map(Number);return new Date(y,m,0).getDate()}
 function fdow(ym){const[y,m]=ym.split('-').map(Number);return new Date(y,m-1,1).getDay()}
 function isCurrentM(ym){const[y,m]=ym.split('-').map(Number);return today.getFullYear()===y&&today.getMonth()===m-1}
+
 function renderCal(){
-  const dm=getD(),all=allM(),syms=Object.keys(all).sort();let html='';
-  syms.forEach((ym,mi)=>{
-    const m=all[ym],days=dimM(ym),first=fdow(ym),isCur=isCurrentM(ym);
-    let g=`<div class="cal-month-lbl">${m.label||ym}</div><div class="cgrid">`+['日','月','火','水','木','金','土'].map(d=>`<div class="dow">${d}</div>`).join('');
-    for(let i=0;i<first;i++) g+=`<div class="cell emp"></div>`;
-    for(let d=1;d<=days;d++){
-      const key=fk(ym,d),vids=(m.days||{})[d]||[],dc=dm[key]||{};
-      const any=Object.entries(dc).some(([k,v])=>k==='extra'?v?.checked:(v===true||v?.done));
-      const cls=['hasv',isCur&&d===today.getDate()?'today':'',any?'cdone':''].filter(Boolean).join(' ');
-      g+=`<div class="cell ${cls}" onclick="openDay('${ym}',${d})"><div class="dn">${d}</div><div class="vnms">${vids.slice(0,3).map(v=>`<div class="vn">${v.n}</div>`).join('')}</div>${any?`<div class="ck">✓</div>`:''}</div>`;
-    }
-    g+='</div>';if(mi<syms.length-1)g+=`<div class="cal-sep"></div>`;html+=g;
-  });
-  document.getElementById('cbody').innerHTML=html;updateStreak();
+  const all=allM(),m=all[curYM]||{label:'',days:{}};
+  document.getElementById('cal-label').textContent=m.label||curYM;
+  const ks=Object.keys(all).sort(),idx=ks.indexOf(curYM);
+  document.querySelectorAll('.cal-nav-btn')[0].style.opacity=idx===0?'.3':'1';
+  document.querySelectorAll('.cal-nav-btn')[1].style.opacity=idx===ks.length-1?'.3':'1';
+  const dm=getD(),days=dimM(curYM),first=fdow(curYM),isCur=isCurrentM(curYM);
+  let g='';
+  for(let i=0;i<first;i++) g+=`<div class="cell emp"></div>`;
+  for(let d=1;d<=days;d++){
+    const key=fk(curYM,d),vids=(m.days||{})[d]||[],dc=dm[key]||{};
+    const any=Object.entries(dc).some(([k,v])=>k==='extra'||k==='morning'?v?.checked:(v===true||v?.done));
+    const cls=['hasv',isCur&&d===today.getDate()?'today':'',any?'cdone':''].filter(Boolean).join(' ');
+    g+=`<div class="cell ${cls}" onclick="openDay('${curYM}',${d})"><span class="dn">${d}</span><div class="vnms">${vids.slice(0,3).map(v=>`<div class="vn">${v.n}</div>`).join('')}</div>${any?`<div class="ck">✓</div>`:''}</div>`;
+  }
+  document.getElementById('cgrid').innerHTML=g;
+  updateStreak();
 }
+
 function openDay(ym,d){document.getElementById('day-ttl').textContent=`${allM()[ym]?.label||ym} ${d}日`;renderDay(ym,d);document.getElementById('ov-day').classList.add('show');}
 function renderDay(ym,d){
-  const key=fk(ym,d),vids=(allM()[ym]?.days||{})[d]||[],dm=getD(),dc=dm[key]||{},ex=dc['extra']||{};
+  const key=fk(ym,d),vids=(allM()[ym]?.days||{})[d]||[],dm=getD(),dc=dm[key]||{},ex=dc['extra']||{},mo=dc['morning']||{};
   const vcards=vids.map((v,i)=>`<div class="vcard"><div class="vcard-row"><span class="bynum">${v.n}</span><span class="vtitle">${v.t}</span><div class="chk-grp"><input type="checkbox" class="mychk" ${dc[i]?.done||dc[i]===true?' checked':''} onchange="tDone('${key}',${i},this.checked)"><input type="number" class="mymin" min="1" max="180" placeholder="分" value="${dc[i]?.mins||''}" onchange="saveMins('${key}',${i},this.value)"><span class="min-lbl">分</span></div></div><a class="ytbtn" href="${v.u}"><span class="ytred">▶</span> YouTubeで開く</a></div>`).join('');
+  const morningCard=`<div class="vcard"><div class="vcard-row"><span class="bynum-green">🌅</span><span class="vtitle">おはよう3分ストレッチ</span><div class="chk-grp"><input type="checkbox" class="mychk" id="mo-chk" ${mo.checked?' checked':''} onchange="tMorning('${key}',this.checked)"><input type="number" class="mymin" id="mo-mins" min="1" max="30" placeholder="分" value="${mo.mins||''}" onchange="saveMorningMins('${key}',this.value)"><span class="min-lbl">分</span></div></div><input class="url-input" id="mo-url" placeholder="YouTubeのURLを貼り付け" value="${esc(mo.url||'')}" oninput="autoSaveMorning('${key}')"></div>`;
   const c4=`<div class="vcard"><div class="vcard-row"><span class="bynum-plus">＋</span><span class="vtitle" style="color:var(--mu)">他の動画を実施</span><div class="chk-grp"><input type="checkbox" class="mychk" id="c4chk" ${ex.checked?' checked':''} onchange="tEx('${key}',this.checked)"><input type="number" class="mymin" id="c4mins" min="1" max="180" placeholder="分" value="${ex.mins||''}" onchange="saveExMins('${key}',this.value)"><span class="min-lbl">分</span></div></div><input class="url-input" id="c4url" placeholder="YouTubeのURLを貼り付け" value="${esc(ex.url||'')}" oninput="autoSaveEx('${key}')"></div>`;
   const tot=calcDayMins(dc,vids.length);
-  document.getElementById('day-body').innerHTML=vcards+c4+(tot>0?`<div style="text-align:right;font-size:12px;color:var(--pkd);margin-top:4px">今日の合計：<strong>${tot}分</strong></div>`:'');
+  document.getElementById('day-body').innerHTML=vcards+morningCard+c4+(tot>0?`<div style="text-align:right;font-size:12px;color:var(--pkd);margin-top:4px">今日の合計：<strong>${tot}分</strong></div>`:'');
 }
-function calcDayMins(dc,n){let t=0;for(let i=0;i<n;i++){if(dc[i]?.mins)t+=parseInt(dc[i].mins)||0;}if(dc.extra?.mins)t+=parseInt(dc.extra.mins)||0;return t;}
+function calcDayMins(dc,n){let t=0;for(let i=0;i<n;i++){if(dc[i]?.mins)t+=parseInt(dc[i].mins)||0;}if(dc.extra?.mins)t+=parseInt(dc.extra.mins)||0;if(dc.morning?.mins)t+=parseInt(dc.morning.mins)||0;return t;}
 function tDone(k,i,v){const m=getD();if(!m[k])m[k]={};if(typeof m[k][i]!=='object'||!m[k][i])m[k][i]={};m[k][i].done=v;LS.set('done',m);renderCal();}
 function saveMins(k,i,val){const m=getD();if(!m[k])m[k]={};if(typeof m[k][i]!=='object'||!m[k][i])m[k][i]={};m[k][i].mins=val?parseInt(val):null;LS.set('done',m);}
 function tEx(k,v){const m=getD();if(!m[k])m[k]={};if(!m[k].extra)m[k].extra={};m[k].extra.checked=v;const u=document.getElementById('c4url');if(u)m[k].extra.url=u.value.trim();LS.set('done',m);renderCal();}
 function saveExMins(k,val){const m=getD();if(!m[k])m[k]={};if(!m[k].extra)m[k].extra={};m[k].extra.mins=val?parseInt(val):null;LS.set('done',m);}
 function autoSaveEx(k){const u=document.getElementById('c4url'),c=document.getElementById('c4chk');if(!u)return;const url=u.value.trim();const m=getD();if(!m[k])m[k]={};if(!m[k].extra)m[k].extra={};m[k].extra.url=url;if(url){m[k].extra.checked=true;if(c)c.checked=true;}LS.set('done',m);renderCal();}
+function tMorning(k,v){const m=getD();if(!m[k])m[k]={};if(!m[k].morning)m[k].morning={};m[k].morning.checked=v;const u=document.getElementById('mo-url');if(u)m[k].morning.url=u.value.trim();LS.set('done',m);renderCal();}
+function saveMorningMins(k,val){const m=getD();if(!m[k])m[k]={};if(!m[k].morning)m[k].morning={};m[k].morning.mins=val?parseInt(val):null;LS.set('done',m);}
+function autoSaveMorning(k){const u=document.getElementById('mo-url'),c=document.getElementById('mo-chk');if(!u)return;const url=u.value.trim();const m=getD();if(!m[k])m[k]={};if(!m[k].morning)m[k].morning={};m[k].morning.url=url;if(url){m[k].morning.checked=true;if(c)c.checked=true;}LS.set('done',m);renderCal();}
 function closeDay(){document.getElementById('ov-day').classList.remove('show');renderCal();}
-function calcStreak(){const dm=getD();const dates=Object.keys(dm).filter(k=>Object.entries(dm[k]||{}).some(([ki,v])=>ki==='extra'?v?.checked:(v===true||v?.done))).sort((a,b)=>b.localeCompare(a));if(!dates.length)return 0;let s=0,cur=new Date();cur.setHours(0,0,0,0);for(const d of dates){const dd=new Date(d+'T00:00:00');dd.setHours(0,0,0,0);if(Math.round((cur-dd)/86400000)<=1){s++;cur=dd;}else break;}return s;}
+function calcStreak(){const dm=getD();const dates=Object.keys(dm).filter(k=>Object.entries(dm[k]||{}).some(([ki,v])=>ki==='extra'||ki==='morning'?v?.checked:(v===true||v?.done))).sort((a,b)=>b.localeCompare(a));if(!dates.length)return 0;let s=0,cur=new Date();cur.setHours(0,0,0,0);for(const d of dates){const dd=new Date(d+'T00:00:00');dd.setHours(0,0,0,0);if(Math.round((cur-dd)/86400000)<=1){s++;cur=dd;}else break;}return s;}
 function updateStreak(){document.getElementById('streak').textContent=`🔥 ${calcStreak()}日連続`;}
-function totalMins(){const dm=getD();let t=0;Object.values(dm).forEach(dc=>{Object.entries(dc).forEach(([k,v])=>{if(k==='extra'){if(v?.mins)t+=parseInt(v.mins)||0;}else{if(v?.mins)t+=parseInt(v.mins)||0;}});});return t;}
+function totalMins(){const dm=getD();let t=0;Object.values(dm).forEach(dc=>{Object.entries(dc).forEach(([k,v])=>{if(k==='extra'||k==='morning'){if(v?.mins)t+=parseInt(v.mins)||0;}else{if(v?.mins)t+=parseInt(v.mins)||0;}});});return t;}
 function renderLog(){
-  const dm=getD(),dd=Object.keys(dm).filter(k=>Object.entries(dm[k]||{}).some(([ki,v])=>ki==='extra'?v?.checked:(v===true||v?.done))).length,totM=totalMins();
+  const dm=getD(),dd=Object.keys(dm).filter(k=>Object.entries(dm[k]||{}).some(([ki,v])=>ki==='extra'||ki==='morning'?v?.checked:(v===true||v?.done))).length,totM=totalMins();
   document.getElementById('stats').innerHTML=`<div class="sbox"><div class="sv">${dd}</div><div class="sl2">実施した日数</div></div><div class="sbox"><div class="sv">${totM}</div><div class="sl2">累計分数</div></div><div class="sbox"><div class="sv">${calcStreak()}🔥</div><div class="sl2">連続日数</div></div>`;
   const all=allM(),entries=[];
-  Object.keys(dm).sort((a,b)=>b.localeCompare(a)).forEach(key=>{
-    const dc=dm[key],parts=key.split('-'),ym=parts[0]+'-'+parts[1],d=parseInt(parts[2]),vids=(all[ym]?.days||{})[d]||[];
-    vids.forEach((v,i)=>{const e=dc[i];if(!e)return;if(e===true||e?.done||e?.mins)entries.push({date:key,label:`${v.n} ${v.t}`,mins:e?.mins||null});});
-    if(dc.extra?.checked||dc.extra?.mins)entries.push({date:key,label:'＋ 他の動画',mins:dc.extra.mins||null});
-  });
+  Object.keys(dm).sort((a,b)=>b.localeCompare(a)).forEach(key=>{const dc=dm[key],parts=key.split('-'),ym=parts[0]+'-'+parts[1],d=parseInt(parts[2]),vids=(all[ym]?.days||{})[d]||[];vids.forEach((v,i)=>{const e=dc[i];if(!e)return;if(e===true||e?.done||e?.mins)entries.push({date:key,label:`${v.n} ${v.t}`,mins:e?.mins||null});});if(dc.morning?.checked||dc.morning?.mins)entries.push({date:key,label:'🌅 おはよう3分ストレッチ',mins:dc.morning.mins||null});if(dc.extra?.checked||dc.extra?.mins)entries.push({date:key,label:'＋ 他の動画',mins:dc.extra.mins||null});});
   if(!entries.length){document.getElementById('loglist').innerHTML='<div style="text-align:center;padding:20px;color:var(--mu);font-size:13px">まだ記録がありません</div>';return;}
-  let h='',last='';
-  entries.forEach(l=>{if(l.date!==last){const d=new Date(l.date+'T00:00:00');h+=`<div class="dh">${d.getMonth()+1}月${d.getDate()}日</div>`;last=l.date;}h+=`<div class="litem"><div class="ldot"></div><div class="lmain"><div class="lvid">${esc(l.label)}</div></div><div style="text-align:right"><div class="lmins">${l.mins||'—'}</div><div class="lminl">分</div></div></div>`;});
+  let h='',last='';entries.forEach(l=>{if(l.date!==last){const d=new Date(l.date+'T00:00:00');h+=`<div class="dh">${d.getMonth()+1}月${d.getDate()}日</div>`;last=l.date;}h+=`<div class="litem"><div class="ldot"></div><div class="lmain"><div class="lvid">${esc(l.label)}</div></div><div style="text-align:right"><div class="lmins">${l.mins||'—'}</div><div class="lminl">分</div></div></div>`;});
   document.getElementById('loglist').innerHTML=h;
 }
 function renderVC(){
   const kw=(document.getElementById('kw-input')?.value||'').trim().toLowerCase(),flt=document.getElementById('note-sel')?.value||'all';
-  let arr=getVC();
-  if(flt==='noted')arr=arr.filter(v=>v.noteUrl);else if(flt==='unnoted')arr=arr.filter(v=>!v.noteUrl);
-  if(kw)arr=arr.filter(v=>[v.ep,v.body].join(' ').toLowerCase().includes(kw));
+  let arr=getVC();if(flt==='noted')arr=arr.filter(v=>v.noteUrl);else if(flt==='unnoted')arr=arr.filter(v=>!v.noteUrl);if(kw)arr=arr.filter(v=>[v.ep,v.body].join(' ').toLowerCase().includes(kw));
   const el=document.getElementById('vc-list');
   if(!arr.length){el.innerHTML=`<div style="text-align:center;padding:32px 0;color:var(--mu);font-size:13px">${kw||flt!=='all'?'一致するコメントがありません':'まだ記録がありません'}</div>`;return;}
   el.innerHTML=arr.map(v=>`<div class="vcd"><div class="vcmeta">${v.ep?`<span class="vcep">${esc(v.ep)}</span>`:''} ${v.date?`<span class="vcdate">${fmtD(v.date)}</span>`:''}<span class="${v.noteUrl?'note-on':'note-off'}">${v.noteUrl?'note済み':'note未'}</span></div><div class="vcbody">${esc(v.body)}</div>${(v.url||v.noteUrl)?`<div class="vc-link-row">${v.url?`<a class="vc-link-btn lvoicy" href="${v.url}">🎙 放送を聴く</a>`:''}${v.noteUrl?`<a class="vc-link-btn lnote" href="${v.noteUrl}">📝 noteを見る</a>`:''}</div>`:''}<div class="vcact"><button class="vcedit-btn" onclick="openVCForm(${v.id})">編集</button><button class="vcdel" onclick="delVC(${v.id})">削除</button></div></div>`).join('');
 }
-function openVCForm(id){
-  vcEditId=id;document.getElementById('vc-form-ttl').textContent=id?'コメントを編集':'Voicyを記録';
-  if(id){const v=getVC().find(x=>x.id===id);if(v){document.getElementById('vf-ep').value=v.ep||'';document.getElementById('vf-date').value=v.date||'';document.getElementById('vf-url').value=v.url||'';document.getElementById('vf-note-url').value=v.noteUrl||'';document.getElementById('vf-body').value=v.body||'';}}
-  else{document.getElementById('vf-ep').value='';document.getElementById('vf-date').value=today.toISOString().split('T')[0];document.getElementById('vf-url').value='';document.getElementById('vf-note-url').value='';document.getElementById('vf-body').value='';}
-  document.getElementById('ov-vc').classList.add('show');
-}
-function saveVCForm(){
-  const ep=document.getElementById('vf-ep').value.trim(),date=document.getElementById('vf-date').value,url=document.getElementById('vf-url').value.trim(),noteUrl=document.getElementById('vf-note-url').value.trim(),body=document.getElementById('vf-body').value.trim();
-  if(!body)return;let arr=getVC();
-  if(vcEditId){arr=arr.map(v=>v.id===vcEditId?{...v,ep,date,url,noteUrl,body}:v);}else{arr=[{id:Date.now(),ep,date,url,noteUrl,body},...arr];}
-  LS.set('voicy',arr);closeVCForm();renderVC();
-}
+function openVCForm(id){vcEditId=id;document.getElementById('vc-form-ttl').textContent=id?'コメントを編集':'Voicyを記録';if(id){const v=getVC().find(x=>x.id===id);if(v){document.getElementById('vf-ep').value=v.ep||'';document.getElementById('vf-date').value=v.date||'';document.getElementById('vf-url').value=v.url||'';document.getElementById('vf-note-url').value=v.noteUrl||'';document.getElementById('vf-body').value=v.body||'';}}else{document.getElementById('vf-ep').value='';document.getElementById('vf-date').value=today.toISOString().split('T')[0];document.getElementById('vf-url').value='';document.getElementById('vf-note-url').value='';document.getElementById('vf-body').value='';}document.getElementById('ov-vc').classList.add('show');}
+function saveVCForm(){const ep=document.getElementById('vf-ep').value.trim(),date=document.getElementById('vf-date').value,url=document.getElementById('vf-url').value.trim(),noteUrl=document.getElementById('vf-note-url').value.trim(),body=document.getElementById('vf-body').value.trim();if(!body)return;let arr=getVC();if(vcEditId){arr=arr.map(v=>v.id===vcEditId?{...v,ep,date,url,noteUrl,body}:v);}else{arr=[{id:Date.now(),ep,date,url,noteUrl,body},...arr];}LS.set('voicy',arr);closeVCForm();renderVC();}
 function closeVCForm(){document.getElementById('ov-vc').classList.remove('show');vcEditId=null;}
 function delVC(id){if(!confirm('削除しますか？'))return;LS.set('voicy',getVC().filter(v=>v.id!==id));renderVC();}
 function fmtD(s){if(!s)return'';const d=new Date(s+'T00:00:00');return`${d.getMonth()+1}/${d.getDate()}`;}
 function openSP(){renderML();document.getElementById('ov-sp').classList.add('show');}
 function closeSP(){document.getElementById('ov-sp').classList.remove('show');}
-function renderML(){
-  const all=allM(),cm=getCM();
-  document.getElementById('sp-mlist').innerHTML=Object.keys(all).sort().map(k=>`<div class="spmi"><span>${all[k].label||k}</span><span style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--mu)">${Object.keys((all[k].days||{})).length}日分</span>${cm[k]?`<button onclick="delM('${k}')" style="background:none;border:none;cursor:pointer;font-size:11px;color:#e24b4a;font-family:-apple-system,sans-serif">削除</button>`:'<span style="font-size:10px;color:var(--mu)">組込</span>'}</span></div>`).join('');
-}
-function saveMonth(){
-  const ym=document.getElementById('sp-ym').value.trim(),raw=document.getElementById('sp-data').value.trim();
-  if(!ym||!raw){alert('年月とデータを入力してください');return;}
-  const days={};raw.split('\n').filter(l=>l.trim()).forEach((line,i)=>{const vids=line.split('|').map(s=>{const p=s.split(',');return{n:(p[0]||'').trim(),t:(p[1]||'').trim(),u:(p[2]||'').trim()};}).filter(v=>v.n);if(vids.length)days[i+1]=vids;});
-  const mns=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  const[y,m]=ym.split('-').map(Number);
-  const cm=getCM();cm[ym]={label:`${y}年${mns[m-1]}`,days};LS.set('months',cm);
-  closeSP();renderCal();alert(`${y}年${mns[m-1]}を追加しました！`);
-}
-function delM(k){if(!confirm('削除しますか？'))return;const c=getCM();delete c[k];LS.set('months',c);renderCal();renderML();}
+function renderML(){const all=allM(),cm=getCM();document.getElementById('sp-mlist').innerHTML=Object.keys(all).sort().map(k=>`<div class="spmi"><span>${all[k].label||k}</span><span style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--mu)">${Object.keys((all[k].days||{})).length}日分</span>${cm[k]?`<button onclick="delM('${k}')" style="background:none;border:none;cursor:pointer;font-size:11px;color:#e24b4a;font-family:-apple-system,sans-serif">削除</button>`:'<span style="font-size:10px;color:var(--mu)">組込</span>'}</span></div>`).join('');}
+function saveMonth(){const ym=document.getElementById('sp-ym').value.trim(),raw=document.getElementById('sp-data').value.trim();if(!ym||!raw){alert('年月とデータを入力してください');return;}const days={};raw.split('\n').filter(l=>l.trim()).forEach((line,i)=>{const vids=line.split('|').map(s=>{const p=s.split(',');return{n:(p[0]||'').trim(),t:(p[1]||'').trim(),u:(p[2]||'').trim()};}).filter(v=>v.n);if(vids.length)days[i+1]=vids;});const mns=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];const[y,m]=ym.split('-').map(Number);const cm=getCM();cm[ym]={label:`${y}年${mns[m-1]}`,days};LS.set('months',cm);closeSP();curYM=ym;renderCal();alert(`${y}年${mns[m-1]}を追加しました！`);}
+function delM(k){if(!confirm('削除しますか？'))return;const c=getCM();delete c[k];LS.set('months',c);const ks=Object.keys(allM()).sort();curYM=ks[ks.length-1]||'2026-05';renderCal();renderML();}
 function resetAll(){if(!confirm('すべての記録を削除しますか？'))return;['done','voicy'].forEach(k=>localStorage.removeItem('bky_'+k));renderCal();alert('リセットしました');}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function fixToolbar(){const tb=document.getElementById('vc-toolbar'),kw=document.getElementById('kw-input'),ns=document.getElementById('note-sel'),ab=document.getElementById('add-btn');if(!tb||!kw||!ns||!ab)return;const total=tb.offsetWidth,addW=ab.offsetWidth||56,noteW=48,gap=12,kwW=total-addW-noteW-gap;kw.style.width=Math.max(80,kwW)+'px';kw.style.flexShrink='0';ns.style.width=noteW+'px';ns.style.flexShrink='0';}
+
 renderCal();renderVC();
 setTimeout(fixToolbar,100);
 window.addEventListener('resize',fixToolbar);
